@@ -313,6 +313,14 @@ export default function LetterPreview({ data, school }: LetterPreviewProps) {
                     </div>
                     <div className="flex gap-2">
                       <span>2.</span>
+                      <p className="text-justify">Peraturan Menteri Agama RI Nomor 28 Tahun 2013 yang diubah dengan Peraturan Menteri Agama Nomor 45 Tahun 2015 tentang Disiplin Kehadiran Pegawai Negeri Sipil di Kementerian Agama;</p>
+                    </div>
+                    <div className="flex gap-2">
+                      <span>3.</span>
+                      <p className="text-justify">Peraturan Menteri Keuangan RI Nomor 113/PMK.05/2012 tentang Perjalanan Dinas;</p>
+                    </div>
+                    <div className="flex gap-2">
+                      <span>4.</span>
                       <p className="text-justify">Keputusan Menteri Agama RI Nomor 9 Tahun 2016 tentang Naskah Dinas pada Kementerian Agama.</p>
                     </div>
                   </>

@@ -35,6 +35,8 @@ export default function LetterForm({ type, school, onSubmit, onCancel }: LetterF
         volume: "1",
         unit: "Kegiatan"
       }]
+    } : type === "surat_tugas" ? {
+      reference: "Peraturan Menteri Agama Nomor 13 Tahun 2012 tentang Organisasi dan Tata Kerja Instansi Vertikal Kementerian Agama;\nPeraturan Menteri Agama RI Nomor 28 Tahun 2013 yang diubah dengan Peraturan Menteri Agama Nomor 45 Tahun 2015 tentang Disiplin Kehadiran Pegawai Negeri Sipil di Kementerian Agama;\nPeraturan Menteri Keuangan RI Nomor 113/PMK.05/2012 tentang Perjalanan Dinas;\nKeputusan Menteri Agama RI Nomor 9 Tahun 2016 tentang Naskah Dinas pada Kementerian Agama."
     } : {}
   });
 
@@ -276,7 +278,16 @@ export default function LetterForm({ type, school, onSubmit, onCancel }: LetterF
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-1.5 md:col-span-2">
               <Label htmlFor="reference" className={labelClass}>Dasar Pelaksanaan (Cukup isi poin-poinnya saja)</Label>
-              <Textarea id="reference" name="reference" placeholder="Contoh:&#10;Peraturan Menteri Agama Nomor 13 Tahun 2012...&#10;Keputusan Menteri Agama RI Nomor 9 Tahun 2016..." required onChange={handleChange} className={textareaClass} rows={4} />
+              <Textarea 
+                id="reference" 
+                name="reference" 
+                value={formData.content.reference || ""}
+                placeholder="Contoh:&#10;Peraturan Menteri Agama Nomor 13 Tahun 2012...&#10;Keputusan Menteri Agama RI Nomor 9 Tahun 2016..." 
+                required 
+                onChange={handleChange} 
+                className={textareaClass} 
+                rows={6} 
+              />
               <p className="text-[10px] text-indigo-400/60 italic mt-1">* Judul 'Menimbang' & 'Dasar' sudah otomatis ada. Cukup isi daftar aturannya.</p>
             </div>
             <div className="space-y-1.5">
