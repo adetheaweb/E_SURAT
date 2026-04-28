@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { Sparkles } from "lucide-react";
 
 interface LetterFormProps {
   type: LetterType;
@@ -91,31 +92,39 @@ export default function LetterForm({ type, school, onSubmit, onCancel }: LetterF
   const CKH_TEMPLATES = [
     { 
       activity: "Melaksanakan Proses Pembelajaran", 
-      note: "Melaksanakan kegiatan belajar mengajar secara efektif dan interaktif sesuai dengan RPP yang telah disusun guna mencapai tujuan pembelajaran yang optimal." 
+      note: "Melaksanakan kegiatan belajar mengajar sesuai jadwal kurikulum di kelas untuk memastikan penyampaian materi efektif." 
     },
     { 
-      activity: "Menyusun Perangkat Pembelajaran", 
-      note: "Menyusun Program Tahunan, Program Semester, Silabus, dan Rencana Pelaksanaan Pembelajaran (RPP) sebagai panduan kegiatan belajar mengajar." 
+      activity: "Penyusunan Perangkat Pembelajaran", 
+      note: "Menyusun Program Tahunan (Prota), Program Semester (Promes), Silabus, dan Rencana Pelaksanaan Pembelajaran (RPP)." 
     },
     { 
-      activity: "Melaksanakan Evaluasi Hasil Belajar", 
-      note: "Melaksanakan penilaian harian, mengoreksi hasil jawaban siswa, dan menginput nilai ke dalam buku nilai atau aplikasi raport." 
+      activity: "Evaluasi dan Penilaian Belajar", 
+      note: "Melaksanakan penilaian harian, koreksi jawaban siswa, dan penginputan nilai ke buku nilai atau aplikasi raport." 
     },
     { 
-      activity: "Mengikuti Rapat Koordinasi", 
-      note: "Mengikuti rapat dinas/koordinasi guru dan staf untuk membahas program madrasah, pengembangan kurikulum, dan evaluasi kinerja." 
+      activity: "Melaksanakan Tugas Piket Guru", 
+      note: "Melaksanakan tugas piket harian untuk menjaga kedisiplinan siswa dan ketertiban lingkungan operasional madrasah." 
     },
     { 
-      activity: "Melaksanakan Tugas Piket", 
-      note: "Melaksanakan tugas piket harian, memantau kedisiplinan siswa, dan memberikan layanan administrasi pendidikan di lingkungan madrasah." 
+      activity: "Rapat Koordinasi & Evaluasi", 
+      note: "Mengikuti rapat kerja guru dan staf untuk membahas program pengembangan madrasah dan evaluasi kinerja bulanan." 
     },
     { 
-      activity: "Membimbing Kegiatan Ekstrakurikuler", 
-      note: "Memberikan bimbingan dan pelatihan kepada siswa dalam kegiatan ekstrakurikuler guna mengembangkan bakat dan minat siswa." 
+      activity: "Pembimbingan Ekstrakurikuler", 
+      note: "Memberikan bimbingan teknis dan pelatihan kepada siswa dalam kegiatan minat bakat untuk pengembangan diri." 
+    },
+    { 
+      activity: "Administrasi Wali Kelas", 
+      note: "Mengelola administrasi kelas, bimbingan siswa, serta pengisian buku laporan hasil belajar (raport) siswa binaan." 
+    },
+    { 
+      activity: "Pengembangan Diri / Workshop", 
+      note: "Mengikuti kegiatan seminar, workshop, atau pelatihan peningkatan kompetensi pendidik (MGMP/KKG)." 
     },
   ];
 
-  const addActivity = () => {
+  const addActivity = (template?: { activity: string; note: string }) => {
     setFormData((prev: any) => ({
       ...prev,
       content: {
@@ -124,8 +133,8 @@ export default function LetterForm({ type, school, onSubmit, onCancel }: LetterF
           ...(prev.content.activities || []),
           {
             activityDate: format(new Date(), "yyyy-MM-dd"),
-            monthlyActivity: "",
-            dailyNote: "",
+            monthlyActivity: template?.activity || "",
+            dailyNote: template?.note || "",
             volume: "1",
             unit: "Kegiatan"
           }
@@ -410,13 +419,34 @@ export default function LetterForm({ type, school, onSubmit, onCancel }: LetterF
               <div className="flex flex-col gap-3 px-1 border-b border-white/5 pb-4">
                 <div className="flex items-center justify-between">
                   <h3 className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Daftar Kegiatan</h3>
-                  <Button 
-                    type="button" 
-                    onClick={addActivity}
-                    className="h-7 bg-indigo-600 hover:bg-indigo-500 text-white text-[10px] px-3"
-                  >
-                    + Baris Kosong
-                  </Button>
+                  <div className="flex gap-2">
+                    <Select 
+                      onValueChange={(v: string) => {
+                        const tpl = CKH_TEMPLATES[parseInt(v)];
+                        addActivity(tpl);
+                      }}
+                    >
+                      <SelectTrigger className="h-7 bg-indigo-600/10 border-indigo-500/20 text-indigo-400 hover:bg-indigo-600/20 transition-all text-[10px] w-auto gap-2 px-3">
+                        <Sparkles className="w-3 h-3" />
+                        <span>Tambah dari Template</span>
+                      </SelectTrigger>
+                      <SelectContent className="bg-[#1e293b] border-white/10 text-white max-w-[300px]">
+                        {CKH_TEMPLATES.map((tpl, tIdx) => (
+                          <SelectItem key={tIdx} value={tIdx.toString()} className="text-[11px] focus:bg-indigo-600 focus:text-white">
+                            {tpl.activity}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+
+                    <Button 
+                      type="button" 
+                      onClick={() => addActivity()}
+                      className="h-7 bg-indigo-600 hover:bg-indigo-500 text-white text-[10px] px-3"
+                    >
+                      + Baris Kosong
+                    </Button>
+                  </div>
                 </div>
                 
                 <div className="flex flex-wrap gap-1.5">
@@ -462,30 +492,15 @@ export default function LetterForm({ type, school, onSubmit, onCancel }: LetterF
                         <div className="flex items-center justify-between md:hidden">
                           <Label className="text-[9px] uppercase font-bold text-slate-500">Kegiatan</Label>
                         </div>
-                        <div className="relative group/tpl">
-                          <Input 
-                            placeholder="Kegiatan Bulanan..." 
-                            value={activity.monthlyActivity || ""} 
-                            required 
-                            onChange={(e) => handleActivityChange(index, "monthlyActivity", e.target.value)} 
-                            className="h-8 text-[11px] bg-transparent border-white/10 pr-8" 
-                          />
-                          <div className="absolute right-1 top-1/2 -translate-y-1/2 opacity-0 group-hover/tpl:opacity-100 transition-opacity flex gap-0.5">
-                            <select 
-                              className="bg-slate-800 text-[9px] border-none rounded cursor-pointer appearance-none px-1 text-indigo-400 font-bold"
-                              onChange={(e) => {
-                                if (e.target.value) {
-                                  const tpl = CKH_TEMPLATES[parseInt(e.target.value)];
-                                  applyTemplate(index, tpl);
-                                  e.target.value = ""; // Reset select
-                                }
-                              }}
-                            >
-                              <option value="">💡</option>
-                              {CKH_TEMPLATES.map((tpl, tIdx) => (
-                                <option key={tIdx} value={tIdx}>{tpl.activity}</option>
-                              ))}
-                            </select>
+                        <div className="flex gap-1">
+                          <div className="relative flex-1">
+                            <Input 
+                              placeholder="Kegiatan Bulanan..." 
+                              value={activity.monthlyActivity || ""} 
+                              required 
+                              onChange={(e) => handleActivityChange(index, "monthlyActivity", e.target.value)} 
+                              className="h-8 text-[11px] bg-transparent border-white/10" 
+                            />
                           </div>
                         </div>
                       </div>

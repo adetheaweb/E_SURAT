@@ -52,12 +52,12 @@ export default function LetterPreview({ data, school }: LetterPreviewProps) {
             <table className="w-full border-collapse border border-black mb-10">
               <thead>
                 <tr className="bg-[#2e7d32] text-white">
-                  <th className="border border-black p-1 w-8">No</th>
-                  <th className="border border-black p-1 w-24">Tanggal</th>
-                  <th className="border border-black p-1 w-32">Kegiatan Bulanan</th>
-                  <th className="border border-black p-1">Catatan Kinerja Harian</th>
-                  <th className="border border-black p-1 w-12">Vol</th>
-                  <th className="border border-black p-1 w-20">Satuan</th>
+                  <th className="border border-black p-1 text-center" style={{ width: '4%' }}>No</th>
+                  <th className="border border-black p-1 text-center" style={{ width: '12%' }}>Tanggal</th>
+                  <th className="border border-black p-1 text-center" style={{ width: '24%' }}>Kegiatan Bulanan</th>
+                  <th className="border border-black p-1 text-center" style={{ width: '48%' }}>Catatan Kinerja Harian</th>
+                  <th className="border border-black p-1 text-center" style={{ width: '5%' }}>Vol</th>
+                  <th className="border border-black p-1 text-center" style={{ width: '7%' }}>Satuan</th>
                 </tr>
               </thead>
               <tbody>
