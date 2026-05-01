@@ -6,6 +6,12 @@
 import React from "react";
 import { format } from "date-fns";
 import { 
+  Printer, 
+  History, 
+  Trash2, 
+  Building2, 
+  ClipboardList, 
+  FileDown,
   ArrowDownLeft, 
   ArrowUpRight, 
   FileText, 
@@ -13,14 +19,10 @@ import {
   CheckCircle, 
   ShieldCheck, 
   Plus, 
-  Settings, 
-  Printer,
-  History,
-  Trash2,
-  Building2,
-  ClipboardList
+  Settings
 } from "lucide-react";
 import { LetterData, LETTER_TYPES, LetterType, SchoolInfo, DEFAULT_SCHOOL } from "@/src/types";
+import { exportToWord } from "@/src/services/wordExportService";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -338,14 +340,27 @@ export default function Dashboard() {
                 <div className="space-y-6">
                   <div className="flex justify-between items-center glass-card p-4 sticky top-4 z-50 print:hidden">
                     <Button variant="ghost" className="text-slate-400 hover:text-white" onClick={() => setActiveView("menu")}>Kembali</Button>
-                    <div className="flex flex-col items-end gap-1">
-                      <Button onClick={handlePrint} className="bg-indigo-600 text-white hover:bg-indigo-500 border-none shadow-lg shadow-indigo-600/20">
-                        <Printer className="w-4 h-4 mr-2" /> Download PDF / Cetak
-                      </Button>
-                      <p className="text-[9px] text-slate-500 italic">Pilih "Save as PDF" di menu printer untuk mendownload</p>
+                    <div className="flex flex-col items-end gap-2">
+                      <div className="flex gap-2">
+                        <Button 
+                          onClick={() => exportToWord(currentLetter, schoolInfo)} 
+                          className="bg-blue-600 text-white hover:bg-blue-500 border-none shadow-lg shadow-blue-600/20"
+                        >
+                          <FileDown className="w-4 h-4 mr-2" /> Download Word
+                        </Button>
+                        <Button 
+                          onClick={handlePrint} 
+                          className="bg-indigo-600 text-white hover:bg-indigo-500 border-none shadow-lg shadow-indigo-600/20"
+                        >
+                          <Printer className="w-4 h-4 mr-2" /> Download PDF / Cetak
+                        </Button>
+                      </div>
+                      <p className="text-[9px] text-slate-500 italic">Pilih "Save as PDF" di menu printer untuk mendownload PDF</p>
                     </div>
                   </div>
-                  <LetterPreview data={currentLetter} school={schoolInfo} />
+                  <div className="preview-container overflow-auto">
+                    <LetterPreview data={currentLetter} school={schoolInfo} />
+                  </div>
                 </div>
               )}
             </>
@@ -433,9 +448,23 @@ export default function Dashboard() {
                             </div>
                           </td>
                           <td className="p-4 text-right">
-                            <div className="flex gap-2 justify-end">
-                              <Button variant="ghost" size="sm" className="h-7 px-3 text-[11px] bg-indigo-600/10 hover:bg-indigo-600/20 text-indigo-400 hover:text-indigo-300 border border-indigo-500/20" onClick={() => handleViewFromHistory(item)}>
-                                Download / Cetak
+                            <div className="flex gap-1 justify-end">
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                title="Download Word"
+                                className="h-7 w-7 p-0 bg-blue-600/10 hover:bg-blue-600/20 text-blue-400 border border-blue-500/20" 
+                                onClick={() => exportToWord(item, schoolInfo)}
+                              >
+                                <FileDown className="w-3.5 h-3.5" />
+                              </Button>
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                className="h-7 px-3 text-[11px] bg-indigo-600/10 hover:bg-indigo-600/20 text-indigo-400 hover:text-indigo-300 border border-indigo-500/20" 
+                                onClick={() => handleViewFromHistory(item)}
+                              >
+                                Pratinjau / Cetak
                               </Button>
                               <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-slate-500 hover:text-rose-500 hover:bg-rose-500/10" onClick={() => handleDeleteHistory(item.id)}>
                                 <Trash2 className="w-3.5 h-3.5" />

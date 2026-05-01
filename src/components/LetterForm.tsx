@@ -11,7 +11,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { Sparkles } from "lucide-react";
+import { Sparkles, Trash2, RotateCcw } from "lucide-react";
+import { toast } from "sonner";
 
 interface LetterFormProps {
   type: LetterType;
@@ -21,26 +22,70 @@ interface LetterFormProps {
 }
 
 export default function LetterForm({ type, school, onSubmit, onCancel }: LetterFormProps) {
-  const [formData, setFormData] = React.useState<any>({
-    number: `421.1/${Math.floor(Math.random() * 1000)}/SMANP/${new Date().getFullYear()}`,
-    date: format(new Date(), "yyyy-MM-dd"),
-    content: type === "ckh" ? {
-      approverName: "", // Will be filled from school info if available
-      approverNip: "",
-      approverTitle: "Kepala Madrasah",
-      activities: [{
-        activityDate: format(new Date(), "yyyy-MM-dd"),
-        monthlyActivity: "",
-        dailyNote: "",
-        volume: "1",
-        unit: "Kegiatan"
-      }]
-    } : type === "surat_tugas" ? {
-      reference: "Peraturan Menteri Agama Nomor 13 Tahun 2012 tentang Organisasi dan Tata Kerja Instansi Vertikal Kementerian Agama;\nPeraturan Menteri Agama RI Nomor 28 Tahun 2013 yang diubah dengan Peraturan Menteri Agama Nomor 45 Tahun 2015 tentang Disiplin Kehadiran Pegawai Negeri Sipil di Kementerian Agama;\nPeraturan Menteri Keuangan RI Nomor 113/PMK.05/2012 tentang Perjalanan Dinas;\nKeputusan Menteri Agama RI Nomor 9 Tahun 2016 tentang Naskah Dinas pada Kementerian Agama."
-    } : {}
+  const [formData, setFormData] = React.useState<any>(() => {
+    // Try to load from draft first
+    const savedDraft = localStorage.getItem(`letter_draft_${type}`);
+    if (savedDraft) {
+      try {
+        return JSON.parse(savedDraft);
+      } catch (e) {
+        console.error("Failed to parse draft", e);
+      }
+    }
+
+    // Default values if no draft
+    return {
+      number: `421.1/${Math.floor(Math.random() * 1000)}/SMANP/${new Date().getFullYear()}`,
+      date: format(new Date(), "yyyy-MM-dd"),
+      content: type === "ckh" ? {
+        approverName: "", 
+        approverNip: "",
+        approverTitle: "Kepala Madrasah",
+        activities: [{
+          activityDate: format(new Date(), "yyyy-MM-dd"),
+          monthlyActivity: "",
+          dailyNote: "",
+          volume: "1",
+          unit: "Kegiatan"
+        }]
+      } : type === "surat_tugas" ? {
+        reference: "Peraturan Menteri Agama Nomor 13 Tahun 2012 tentang Organisasi dan Tata Kerja Instansi Vertikal Kementerian Agama;\nPeraturan Menteri Agama RI Nomor 28 Tahun 2013 yang diubah dengan Peraturan Menteri Agama Nomor 45 Tahun 2015 tentang Disiplin Kehadiran Pegawai Negeri Sipil di Kementerian Agama;\nPeraturan Menteri Keuangan RI Nomor 113/PMK.05/2012 tentang Perjalanan Dinas;\nKeputusan Menteri Agama RI Nomor 9 Tahun 2016 tentang Naskah Dinas pada Kementerian Agama."
+      } : {}
+    };
   });
 
-  // Pre-fill approver info from school data when it's available
+  // Save draft whenever formData changes
+  React.useEffect(() => {
+    localStorage.setItem(`letter_draft_${type}`, JSON.stringify(formData));
+  }, [formData, type]);
+
+  const clearDraft = () => {
+    if (confirm("Apakah Anda yakin ingin menghapus draf ini dan memulai dari awal?")) {
+      localStorage.removeItem(`letter_draft_${type}`);
+      // Refresh state to default
+      setFormData({
+        number: `421.1/${Math.floor(Math.random() * 1000)}/SMANP/${new Date().getFullYear()}`,
+        date: format(new Date(), "yyyy-MM-dd"),
+        content: type === "ckh" ? {
+          approverName: school?.principalName || "", 
+          approverNip: school?.principalNip || "",
+          approverTitle: "Kepala Madrasah",
+          activities: [{
+            activityDate: format(new Date(), "yyyy-MM-dd"),
+            monthlyActivity: "",
+            dailyNote: "",
+            volume: "1",
+            unit: "Kegiatan"
+          }]
+        } : type === "surat_tugas" ? {
+          reference: "Peraturan Menteri Agama Nomor 13 Tahun 2012 tentang Organisasi dan Tata Kerja Instansi Vertikal Kementerian Agama;\nPeraturan Menteri Agama RI Nomor 28 Tahun 2013 yang diubah dengan Peraturan Menteri Agama Nomor 45 Tahun 2015 tentang Disiplin Kehadiran Pegawai Negeri Sipil di Kementerian Agama;\nPeraturan Menteri Keuangan RI Nomor 113/PMK.05/2012 tentang Perjalanan Dinas;\nKeputusan Menteri Agama RI Nomor 9 Tahun 2016 tentang Naskah Dinas pada Kementerian Agama."
+        } : {}
+      });
+      toast.info("Draf berhasil dibersihkan.");
+    }
+  };
+
+  // Pre-fill approver info from school data when it's available and NOT set
   React.useEffect(() => {
     if (type === "ckh" && !formData.content.approverName && school) {
       setFormData((prev: any) => ({
@@ -194,6 +239,7 @@ export default function LetterForm({ type, school, onSubmit, onCancel }: LetterF
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    localStorage.removeItem(`letter_draft_${type}`);
     onSubmit(formData);
   };
 
@@ -487,7 +533,7 @@ export default function LetterForm({ type, school, onSubmit, onCancel }: LetterF
 
               <div className="space-y-2">
                 {(formData.content.activities || []).map((activity: any, index: number) => (
-                  <div key={index} className="grid grid-cols-1 md:grid-cols-[100px_1fr_1fr_60px_80px_40px] gap-2 items-start bg-white/5 p-2 md:p-1 rounded-lg border border-white/5 group">
+                  <div key={index} className="grid grid-cols-1 md:grid-cols-[100px_1fr_1fr_60px_80px_40px] gap-2 items-start bg-black/20 p-3 md:p-1.5 rounded-lg border border-white/10 group shadow-lg shadow-black/10">
                     <div className="md:contents">
                       <div className="space-y-1 md:space-y-0">
                         <Label className="md:hidden text-[9px] uppercase font-bold text-slate-500">Tanggal</Label>
@@ -588,9 +634,29 @@ export default function LetterForm({ type, school, onSubmit, onCancel }: LetterF
         {renderFields()}
       </div>
 
-      <div className="flex justify-end gap-3 pt-6 border-t border-white/5">
-        <Button type="button" variant="ghost" className="text-slate-400 hover:text-white" onClick={onCancel}>Batal</Button>
-        <Button type="submit" className="bg-indigo-600 hover:bg-indigo-500 text-white border-none shadow-lg shadow-indigo-500/20 px-8">Pratinjau & Cetak</Button>
+      <div className="flex justify-between items-center pt-6 border-t border-white/5">
+        <div className="flex gap-2">
+          <Button type="button" variant="ghost" className="text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 gap-2 h-9 px-3" onClick={clearDraft}>
+            <RotateCcw className="w-3.5 h-3.5" />
+            <span>Reset Form</span>
+          </Button>
+          <Button 
+            type="button" 
+            variant="ghost" 
+            className="text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 gap-2 h-9 px-3" 
+            onClick={() => {
+              localStorage.setItem(`letter_draft_${type}`, JSON.stringify(formData));
+              toast.success("Draf berhasil disimpan ke cache browser!");
+            }}
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Simpan Draf</span>
+          </Button>
+        </div>
+        <div className="flex gap-3">
+          <Button type="button" variant="ghost" className="text-slate-400 hover:text-white" onClick={onCancel}>Batal</Button>
+          <Button type="submit" className="bg-indigo-600 hover:bg-indigo-500 text-white border-none shadow-lg shadow-indigo-500/20 px-8">Pratinjau & Cetak</Button>
+        </div>
       </div>
     </form>
   );

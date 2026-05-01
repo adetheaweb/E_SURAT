@@ -49,9 +49,9 @@ export default function LetterPreview({ data, school }: LetterPreviewProps) {
               </div>
             </div>
 
-            <table className="w-full border-collapse border border-black mb-10">
-              <thead>
-                <tr className="bg-[#2e7d32] text-white">
+            <table className="w-full border-collapse border border-black mb-10 print:table-header-group">
+              <thead className="print:table-header-group">
+                <tr className="bg-[#2e7d32] text-white print:text-black print:bg-transparent">
                   <th className="border border-black p-1 text-center" style={{ width: '4%' }}>No</th>
                   <th className="border border-black p-1 text-center" style={{ width: '12%' }}>Tanggal</th>
                   <th className="border border-black p-1 text-center" style={{ width: '24%' }}>Kegiatan Bulanan</th>
@@ -63,7 +63,7 @@ export default function LetterPreview({ data, school }: LetterPreviewProps) {
               <tbody>
                 {content.activities && content.activities.length > 0 ? (
                   content.activities.map((act: any, idx: number) => (
-                    <tr key={idx}>
+                    <tr key={idx} className="print:break-inside-avoid">
                       <td className="border border-black p-2 text-center">{idx + 1}</td>
                       <td className="border border-black p-2 text-center">{act.activityDate}</td>
                       <td className="border border-black p-2">{act.monthlyActivity}</td>
@@ -92,7 +92,7 @@ export default function LetterPreview({ data, school }: LetterPreviewProps) {
                   <p>{content.approverTitle || "Kepala Madrasah"},</p>
                 </div>
                 <div>
-                  <p className="font-bold underline uppercase">{content.approverName || "............................................"}</p>
+                  <p className="font-bold underline">{content.approverName || "............................................"}</p>
                   <p>NIP. {content.approverNip || "........................................"}</p>
                 </div>
               </div>
@@ -102,7 +102,7 @@ export default function LetterPreview({ data, school }: LetterPreviewProps) {
                   <p>{content.position},</p>
                 </div>
                 <div>
-                  <p className="font-bold underline uppercase">{content.staffName}</p>
+                  <p className="font-bold underline">{content.staffName}</p>
                   <p>NIP. {content.nip}</p>
                 </div>
               </div>
@@ -140,7 +140,7 @@ export default function LetterPreview({ data, school }: LetterPreviewProps) {
                 <div className="grid grid-cols-[120px_20px_1fr]">
                   <span>N a m a</span>
                   <span>:</span>
-                  <span className="font-bold uppercase">{content.studentName}</span>
+                  <span className="font-bold">{content.studentName}</span>
                 </div>
                 <div className="grid grid-cols-[120px_20px_1fr]">
                   <span>Tempat, Tgl. Lahir</span>
@@ -199,7 +199,7 @@ export default function LetterPreview({ data, school }: LetterPreviewProps) {
                 <div className="grid grid-cols-[120px_20px_1fr]">
                   <span>N a m a</span>
                   <span>:</span>
-                  <span className="font-bold uppercase">{content.studentName}</span>
+                  <span className="font-bold">{content.studentName}</span>
                 </div>
                 <div className="grid grid-cols-[120px_20px_1fr]">
                   <span>Tempat, Tgl. Lahir</span>
@@ -230,7 +230,7 @@ export default function LetterPreview({ data, school }: LetterPreviewProps) {
               <div className="grid grid-cols-[150px_20px_1fr]">
                 <span>Nama</span>
                 <span>:</span>
-                <span className="font-bold uppercase">{content.studentName}</span>
+                <span className="font-bold">{content.studentName}</span>
               </div>
               <div className="grid grid-cols-[150px_20px_1fr]">
                 <span>NIS / NISN</span>
@@ -394,7 +394,7 @@ export default function LetterPreview({ data, school }: LetterPreviewProps) {
               <div className="grid grid-cols-[150px_20px_1fr]">
                 <span>Nama</span>
                 <span>:</span>
-                <span className="font-bold uppercase">{content.studentName}</span>
+                <span className="font-bold">{content.studentName}</span>
               </div>
               <div className="grid grid-cols-[150px_20px_1fr]">
                 <span>NIS / NISN</span>
@@ -434,7 +434,7 @@ export default function LetterPreview({ data, school }: LetterPreviewProps) {
               <div className="grid grid-cols-[150px_20px_1fr]">
                 <span>Nama</span>
                 <span>:</span>
-                <span className="font-bold uppercase">{content.studentName}</span>
+                <span className="font-bold">{content.studentName}</span>
               </div>
               <div className="grid grid-cols-[150px_20px_1fr]">
                 <span>NIS / NISN</span>
@@ -461,7 +461,7 @@ export default function LetterPreview({ data, school }: LetterPreviewProps) {
         <div className="text-center mb-10 leading-tight">
           <h1 className="text-[18px] font-bold uppercase">{LETTER_TITLES[data.type]}</h1>
           <h1 className="text-[18px] font-bold uppercase">{school.name}</h1>
-          <p className="text-[14px] font-bold mt-1 uppercase">Bulan {data.content.month}</p>
+          <p className="text-[14px] font-bold mt-1">Bulan {data.content.month}</p>
         </div>
       ) : (
         <>
@@ -487,7 +487,7 @@ export default function LetterPreview({ data, school }: LetterPreviewProps) {
             </div>
             
             <div>
-              <p className="text-sm font-bold underline uppercase">{school.principalName}</p>
+              <p className="text-sm font-bold underline">{school.principalName}</p>
               <p className="text-sm">NIP. {school.principalNip}</p>
             </div>
           </div>

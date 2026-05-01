@@ -164,7 +164,7 @@
       border: none !important;
       width: 210mm !important;
       min-height: 297mm !important;
-      padding: 2cm 3cm 2cm 3cm !important;
+      padding: 1.5cm 2cm !important;
       background-color: white !important;
       color: black !important;
       font-family: var(--font-serif) !important;
@@ -173,6 +173,25 @@
     #printable-letter .text-blue-700 {
       color: black !important;
       text-decoration: underline !important;
+    }
+
+    table {
+      page-break-inside: auto;
+      border-collapse: collapse !important;
+      width: 100%;
+    }
+    
+    thead {
+      display: table-header-group !important;
+    }
+    
+    tr {
+      page-break-inside: avoid !important;
+      page-break-after: auto !important;
+    }
+    
+    th, td {
+      border: 1px solid black !important;
     }
   }
 }
@@ -185,6 +204,12 @@
   @apply bg-white/5 border border-white/10 text-white focus:border-indigo-500 transition-colors;
 }
 
-.gradient-text {
-  @apply bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400;
+.preview-container {
+  @apply bg-slate-900/50 py-10 px-4 min-h-screen flex justify-center;
+}
+
+@media print {
+  .preview-container {
+    @apply p-0 m-0 bg-transparent block;
+  }
 }
